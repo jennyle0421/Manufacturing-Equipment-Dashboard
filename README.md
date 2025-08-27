@@ -1,7 +1,22 @@
 # 🏭 Manufacturing Equipment Dashboard
+![Python](https://img.shields.io/badge/Python-3.9-blue?logo=python)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue?logo=postgresql)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.20+-red?logo=streamlit)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-A **real-time monitoring dashboard** for manufacturing equipment built with **Streamlit**, **PostgreSQL**, and **Python**.  
-This app provides **live charts** for temperature, vibration, and throughput, **highlights critical alerts**, and **auto-refreshes every 5 seconds**.
+[![Streamlit App](https://img.shields.io/badge/Live_Demo-Streamlit-green?logo=streamlit)](https://manufacturing-equipment-dashboard.streamlit.app)
+
+---
+
+## 🌐 Live Demo
+Try the app here: [**Manufacturing Equipment Dashboard**](https://manufacturing-equipment-dashboard.streamlit.app)
+
+---
+
+## 📝 About the Project
+This project demonstrates **real-time IoT-style monitoring** for manufacturing equipment.  
+It showcases **data streaming**, **PostgreSQL integration**, **alert automation**,  
+and a responsive **Streamlit dashboard** — ideal for industrial environments.
 
 ---
 
