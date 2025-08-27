@@ -54,7 +54,7 @@ def load_data():
         return df
     except Exception as e:
         st.error(f"⚠️ Failed to fetch data from the database.\n\nError: {e}")
-        return pd.DataFrame()  # Return empty DF so Streamlit doesn't crash
+        return pd.DataFrame()
 
 df = load_data()
 
@@ -65,7 +65,27 @@ if df.empty:
     st.warning("⚠️ No data available yet. Start `mock_sensor.py` to generate live data.")
 else:
     st.subheader("📊 Latest Equipment Data")
-    st.dataframe(df, use_container_width=True)
+
+    # ---------------------
+    # HIGHLIGHT CRITICAL VALUES
+    # ---------------------
+    def highlight_values(val, column):
+        if column == "temperature":
+            return "background-color: red; color: white;" if val > 100 else ""
+        elif column == "vibration":
+            return "background-color: orange; color: black;" if val > 2.0 else ""
+        elif column == "throughput":
+            return "background-color: #007BFF; color: white;" if val < 100 else ""
+        return ""
+
+    def highlight_dataframe(df):
+        return df.style.apply(
+            lambda col: [highlight_values(v, col.name) for v in col],
+            axis=0
+        )
+
+    styled_df = highlight_dataframe(df)
+    st.dataframe(styled_df, use_container_width=True)
 
     # ---------------------
     # METRICS OVERVIEW
