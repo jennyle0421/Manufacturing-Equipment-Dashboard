@@ -39,7 +39,7 @@ manufacturing-equipment-dashboard/
 
 ### **1. Clone the Repo**
 ```bash
-git clone https://github.com/<your-username>/Manufacturing-Equipment-Dashboard.git
+git clone https://github.com/jennyle0421/Manufacturing-Equipment-Dashboard.git
 cd Manufacturing-Equipment-Dashboard
 ```
 
