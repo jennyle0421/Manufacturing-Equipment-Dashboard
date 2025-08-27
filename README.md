@@ -1,15 +1,15 @@
-# 🏭 Manufacturing Equipment Dashboard
+# 🏭 Jenny’s Manufacturing Equipment Dashboard
 ![Python](https://img.shields.io/badge/Python-3.9-blue?logo=python)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue?logo=postgresql)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.20+-red?logo=streamlit)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-[![Streamlit App](https://img.shields.io/badge/Live_Demo-Streamlit-green?logo=streamlit)](https://manufacturing-equipment-dashboard.streamlit.app)
+[![Streamlit App](https://img.shields.io/badge/Live_Demo-Streamlit-green?logo=streamlit)](https://jennys-manufacturing-equipment-dashboard.streamlit.app)
 
 ---
 
 ## 🌐 Live Demo
-Try the app here: [**Manufacturing Equipment Dashboard**](https://manufacturing-equipment-dashboard.streamlit.app)
+Try the app here: [**Jenny’s Manufacturing Equipment Dashboard**](https://jennys-manufacturing-equipment-dashboard.streamlit.app)
 
 ---
 
