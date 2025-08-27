@@ -1,4 +1,3 @@
-import os
 import psycopg2
 import pandas as pd
 import streamlit as st
@@ -25,78 +24,72 @@ st_autorefresh(interval=5000, key="data_refresh")
 # DATABASE CONNECTION
 # ---------------------
 def get_connection():
-    return psycopg2.connect(
-        host=st.secrets["DB_HOST"],
-        database=st.secrets["DB_NAME"],
-        user=st.secrets["DB_USER"],
-        password=st.secrets["DB_PASS"],
-        port=st.secrets["DB_PORT"],
-        sslmode="require"   # Neon requires SSL
-    )
+    try:
+        return psycopg2.connect(
+            host=st.secrets["DB_HOST"],
+            database=st.secrets["DB_NAME"],
+            user=st.secrets["DB_USER"],
+            password=st.secrets["DB_PASS"],
+            port=st.secrets["DB_PORT"],
+            sslmode="require"
+        )
+    except Exception as e:
+        st.error(f"⚠️ Failed to connect to the database: {e}")
+        st.stop()
 
 # ---------------------
-# LOAD LATEST DATA
+# FETCH DATA
 # ---------------------
 def load_data():
-    query = """
-        SELECT * FROM equipment_data
-        ORDER BY recorded_at DESC
-        LIMIT 50
-    """
     try:
         conn = get_connection()
+        query = """
+            SELECT *
+            FROM equipment_data
+            ORDER BY created_at DESC
+            LIMIT 50
+        """
         df = pd.read_sql(query, conn)
         conn.close()
         return df
     except Exception as e:
-        st.error("⚠️ Failed to fetch data from the database.")
-        st.exception(e)
-        return pd.DataFrame()
+        st.error(f"⚠️ Failed to fetch data from the database.\n\nError: {e}")
+        return pd.DataFrame()  # Return empty DF so Streamlit doesn't crash
 
 df = load_data()
 
 # ---------------------
-# HANDLE EMPTY DATA
+# DISPLAY DASHBOARD
 # ---------------------
 if df.empty:
-    st.warning("⚠️ No data available yet. Start mock_sensor.py to generate live data.")
-    st.stop()
+    st.warning("⚠️ No data available yet. Start `mock_sensor.py` to generate live data.")
+else:
+    st.subheader("📊 Latest Equipment Data")
+    st.dataframe(df, use_container_width=True)
 
-# Convert recorded_at to datetime for charts
-df["recorded_at"] = pd.to_datetime(df["recorded_at"])
+    # ---------------------
+    # METRICS OVERVIEW
+    # ---------------------
+    st.subheader("🔍 Metrics Overview")
 
-# ---------------------
-# CRITICAL ALERT COUNTERS
-# ---------------------
-critical_temp = df[df["temperature"] > 100].shape[0]
-critical_vibe = df[df["vibration"] > 2.0].shape[0]
+    col1, col2, col3 = st.columns(3)
 
-col1, col2 = st.columns(2)
-col1.metric("🔥 Overheating Machines", critical_temp)
-col2.metric("⚡ High-Vibration Machines", critical_vibe)
+    avg_temp = df["temperature"].mean()
+    avg_vib = df["vibration"].mean()
+    avg_throughput = df["throughput"].mean()
 
-# ---------------------
-# HIGHLIGHT CRITICAL ALERTS IN TABLE
-# ---------------------
-def highlight_alerts(row):
-    color = ""
-    if row["temperature"] > 100:
-        color = "background-color: #ff4d4d; color: white"  # Red for overheating
-    elif row["vibration"] > 2.0:
-        color = "background-color: #ff944d; color: white"  # Orange for high vibration
-    return [color] * len(row)
+    col1.metric("🌡️ Avg Temperature (°F)", f"{avg_temp:.2f}")
+    col2.metric("📳 Avg Vibration (mm/s)", f"{avg_vib:.2f}")
+    col3.metric("⚡ Avg Throughput (units/hr)", f"{avg_throughput:.2f}")
 
-st.subheader("Latest Equipment Data")
-st.dataframe(df.style.apply(highlight_alerts, axis=1), use_container_width=True)
+    # ---------------------
+    # VISUALIZATIONS
+    # ---------------------
+    st.subheader("📈 Temperature Trends")
+    st.line_chart(df.set_index("created_at")["temperature"])
 
-# ---------------------
-# VISUAL CHARTS
-# ---------------------
-st.subheader("Temperature Trends")
-st.line_chart(df.set_index("recorded_at")["temperature"])
+    st.subheader("📈 Vibration Trends")
+    st.line_chart(df.set_index("created_at")["vibration"])
 
-st.subheader("Vibration Trends")
-st.line_chart(df.set_index("recorded_at")["vibration"])
-
-st.subheader("Throughput Trends")
-st.line_chart(df.set_index("recorded_at")["throughput"])
+    st.subheader("📈 Throughput Trends")
+    st.line_chart(df.set_index("created_at")["throughput"])
