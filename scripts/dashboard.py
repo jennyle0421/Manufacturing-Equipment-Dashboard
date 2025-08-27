@@ -1,3 +1,4 @@
+import os
 import psycopg2
 import pandas as pd
 import streamlit as st
@@ -25,10 +26,12 @@ st_autorefresh(interval=5000, key="data_refresh")
 # ---------------------
 def get_connection():
     return psycopg2.connect(
-        host="localhost",
-        database="equipment_db",
-        user="postgres",
-        password="1234"
+        host=st.secrets["DB_HOST"],
+        database=st.secrets["DB_NAME"],
+        user=st.secrets["DB_USER"],
+        password=st.secrets["DB_PASS"],
+        port=st.secrets["DB_PORT"],
+        sslmode="require"   # Neon requires SSL
     )
 
 # ---------------------
@@ -40,21 +43,27 @@ def load_data():
         ORDER BY recorded_at DESC
         LIMIT 50
     """
-    # Open new connection every refresh
-    conn = get_connection()
-    df = pd.read_sql(query, conn)
-    conn.close()
-    return df
+    try:
+        conn = get_connection()
+        df = pd.read_sql(query, conn)
+        conn.close()
+        return df
+    except Exception as e:
+        st.error("⚠️ Failed to fetch data from the database.")
+        st.exception(e)
+        return pd.DataFrame()
 
 df = load_data()
 
-# Convert recorded_at to datetime for charts
-df["recorded_at"] = pd.to_datetime(df["recorded_at"])
-
-# Handle empty data gracefully
+# ---------------------
+# HANDLE EMPTY DATA
+# ---------------------
 if df.empty:
     st.warning("⚠️ No data available yet. Start mock_sensor.py to generate live data.")
     st.stop()
+
+# Convert recorded_at to datetime for charts
+df["recorded_at"] = pd.to_datetime(df["recorded_at"])
 
 # ---------------------
 # CRITICAL ALERT COUNTERS
