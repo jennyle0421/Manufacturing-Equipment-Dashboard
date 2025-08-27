@@ -94,11 +94,6 @@ streamlit run scripts/dashboard.py
 
 ---
 
-## 📸 Dashboard Preview
-![Dashboard Preview](assets/dashboard_preview.png)
-
----
-
 ## 📌 Requirements
 - **Python** 3.9+
 - **PostgreSQL** 13+
