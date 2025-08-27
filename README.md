@@ -94,11 +94,8 @@ streamlit run scripts/dashboard.py
 
 ---
 
-## 📸 Example Screenshot *(optional)*
-> *(Add an image here later if you want)*  
-```markdown
+## 📸 Dashboard Preview
 ![Dashboard Preview](assets/dashboard_preview.png)
-```
 
 ---
 
