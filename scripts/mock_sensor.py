@@ -5,11 +5,11 @@ from datetime import datetime
 
 # Database connection
 conn = psycopg2.connect(
-    host="localhost",
-    port="5432",
-    database="equipment_db",
-    user="postgres",
-    password="1234"
+    host="ep-square-mode-aev6ujkw-pooler.c-2.us-east-2.aws.neon.tech",
+    database="neondb",
+    user="neondb_owner",
+    password="npg_YGSQ8cMUL7gq",
+    sslmode="require"
 )
 
 cur = conn.cursor()
